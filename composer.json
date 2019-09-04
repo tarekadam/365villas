@@ -24,7 +24,10 @@
             "TarekAdam\\Test\\": "tests/"
         }
     },
-    "require": {},
+    "require": {
+        "php": ">=7.0.0",
+        "guzzlehttp/guzzle": "^6.3"
+    },
     "require-dev": {
         "graham-campbell/testbench": "^5.0@dev",
         "phpunit/phpunit": "^7.1@dev",
