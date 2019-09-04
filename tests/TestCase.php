@@ -1,9 +1,9 @@
 <?php
 
-namespace BoneCreative\Test;
+namespace TarekAdam\Test;
 
 use Orchestra\Testbench\TestCase as BaseCase;
-use BoneCreative\DayVillas\ServiceProvider;
+use TarekAdam\DayVillas\ServiceProvider;
 
 class TestCase extends BaseCase{
 	protected function setUp(){

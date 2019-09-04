@@ -1,5 +1,5 @@
 {
-    "name": "bonecreative/day-villas",
+    "name": "tarek-adam/day-villas",
     "description": "Laravel package boilerplate.",
     "keywords": [
         "laravel",
@@ -16,12 +16,12 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "BoneCreative\\DayVillas\\": "src/"
+            "TarekAdam\\DayVillas\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "BoneCreative\\Test\\": "tests/"
+            "TarekAdam\\Test\\": "tests/"
         }
     },
     "require": {},
@@ -33,7 +33,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "BoneCreative\\DayVillas\\ServiceProvider"
+                "TarekAdam\\DayVillas\\ServiceProvider"
             ]
         }
     }

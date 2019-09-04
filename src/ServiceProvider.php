@@ -1,15 +1,15 @@
 <?php
 
-namespace BoneCreative\DayVillas;
+namespace TarekAdam\DayVillas;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 /**
  * Class ServiceProvider
- * @package BoneCreative\LaravelCors
+ * @package TarekAdam\LaravelCors
  */
 class ServiceProvider extends BaseServiceProvider{
-	CONST VENDOR_PATH = 'bone-creative/day-villas';
+	CONST VENDOR_PATH = 'tarek-adam/day-villas';
 	CONST SHORT_NAME = 'day-villas';
 
 	/**

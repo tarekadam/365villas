@@ -15,7 +15,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="BoneCreative Test Suite">
+        <testsuite name="TarekAdam Test Suite">
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>

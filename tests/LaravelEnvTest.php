@@ -1,12 +1,12 @@
 <?php
 
-namespace BoneCreative\Test;
+namespace TarekAdam\Test;
 
 use Carbon\Carbon;
 
 /**
  * Class LaravelEnvTest
- * @package BoneCreative\Test
+ * @package TarekAdam\Test
  */
 class LaravelEnvTest extends TestCase{
 
