@@ -64,7 +64,7 @@ class Client implements Arrayable, Jsonable{
 		}
 
 		if($call == 'post' and !empty($params)){
-			unset($params['owner_token']);
+			//unset($params['owner_token']);
 			$params = [
 				'debug' => env('APP_DEBUG'),
 				'body'  => http_build_query($params)];
