@@ -20,7 +20,6 @@ class ServiceProvider extends BaseServiceProvider{
 	public function boot(){
 
 		$this->bootConfig();
-		//$this->bootMigrations();
 
 	}
 
@@ -31,8 +30,14 @@ class ServiceProvider extends BaseServiceProvider{
 	 */
 	public function register(){
 
-	}
+		$this->app->singleton(Client::class, function ($app){
+			return new Client(config(self::SHORT_NAME . '.base_url'),
+			                  config(self::SHORT_NAME . '.key'),
+			                  config(self::SHORT_NAME . '.pass'),
+			                  config(self::SHORT_NAME . '.token'));
+		});
 
+	}
 
 	/**
 	 * @internal
@@ -40,13 +45,6 @@ class ServiceProvider extends BaseServiceProvider{
 	private function bootConfig(){
 		$this->publishes([__DIR__ . '/../config/main.php' => config_path(SELF::SHORT_NAME . '.php')], 'config');
 		$this->mergeConfigFrom(__DIR__ . '/../config/main.php', SELF::SHORT_NAME);
-	}
-
-	/**
-	 * @internal
-	 */
-	private function bootMigrations(){
-		$this->loadMigrationsFrom(__DIR__ . '/../migrations');
 	}
 
 }
