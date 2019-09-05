@@ -64,7 +64,10 @@ class Client implements Arrayable, Jsonable{
 		}
 
 		if($call == 'post' and !empty($params)){
-			$params = ['form_params' => $params];
+			unset($params['owner_token']);
+			$params = [
+				'debug' => env('APP_DEBUG'),
+				'body'  => http_build_query($params)];
 		}
 
 		$response = $this->guzzle->$call($url, $params);
@@ -75,7 +78,7 @@ class Client implements Arrayable, Jsonable{
 		$this->status = $response->getStatusCode();
 
 		try{
-			$body = $response->getBody();
+			$body           = $response->getBody();
 			$this->response = (!empty($body)) ? json_decode($body, true):[];
 			if(json_last_error() !== JSON_ERROR_NONE){
 				throw new UnprocessableResponseException('Could not read response.');
@@ -86,7 +89,6 @@ class Client implements Arrayable, Jsonable{
 			$this->response = [];
 		}
 	}
-
 
 	public function toArray(){
 		return $this->response;
