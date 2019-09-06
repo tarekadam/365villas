@@ -44,7 +44,7 @@ class Client implements Arrayable, Jsonable{
 				'owner_token' => $this->owner,
 				'key'         => $this->key,
 				'pass'        => $this->pass,
-				'action'      => strtolower($name)
+				'action'      => (!empty($route_info['action'])) ? $route_info['action']:strtolower($name),
 			] + $arguments;
 
 		$url = $route_info['uri'];
@@ -72,6 +72,8 @@ class Client implements Arrayable, Jsonable{
 
 		$response = $this->guzzle->$call($url, $params);
 		$this->parseResponse($response);
+
+		return $this->toArray();
 	}
 
 	private function parseResponse(ResponseInterface $response){

@@ -1,0 +1,16 @@
+{
+  "page": "integer",
+  "limit": "integer",
+  "isfeatured": "boolean",
+  "category_id": "integer",
+  "keyterm": "string",
+  "checkin": "date",
+  "checkout": "date",
+  "numberadults": "integer",
+  "children": "integer",
+  "airconditioner": "boolean",
+  "parking": "boolean",
+  "ocean": "boolean",
+  "allowpet": "boolean",
+  "allowsmoking": "boolean"
+}
