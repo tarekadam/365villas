@@ -33,7 +33,7 @@
     "require": {
         "php": ">=7.0.0",
         "guzzlehttp/guzzle": "^6.3",
-        "tarek-adam/page-stream": "dev-master",
+        "tarek-adam/page-stream": "dev-master"
     },
     "require-dev": {
         "graham-campbell/testbench": "^5.0@dev",
