@@ -21,6 +21,7 @@ class Client implements Arrayable, Jsonable, Paginatable{
 	private $pass;
 	private $request = [];
 	private $response = [];
+	private $last_call;
 
 	public $status = 205;
 
@@ -39,6 +40,12 @@ class Client implements Arrayable, Jsonable, Paginatable{
 		if(empty($this->endpoints[$name])){
 			throw new MissingEndpointException($name);
 		}
+
+		if(!empty($arguments)){
+			$arguments = $arguments[0];
+		}
+
+		$this->last_call = $name;
 
 		$request = new RequestFactory($name);
 		$options = $request->make($arguments);
@@ -62,18 +69,6 @@ class Client implements Arrayable, Jsonable, Paginatable{
 
 		$call = strtolower($route_info['method']);
 
-		if($call == 'get' and !empty($params)){
-			$url    .= '?' . http_build_query($params);
-			$params = [];
-		}
-
-		if($call == 'post' and !empty($params)){
-			//unset($params['owner_token']);
-			$params = [
-				'debug' => env('APP_DEBUG'),
-				'body'  => http_build_query($params)];
-		}
-
 		$this->request = [
 			'method' => $call,
 			'url'    => $url,
@@ -91,9 +86,11 @@ class Client implements Arrayable, Jsonable, Paginatable{
 		try{
 			$body           = $response->getBody();
 			$this->response = (!empty($body)) ? json_decode($body, true):[];
+
 			if(json_last_error() !== JSON_ERROR_NONE){
 				throw new UnprocessableResponseException('Could not read response.');
 			}
+
 		}catch(\Exception $exception){
 			Log::error($exception);
 			$this->status   = 205;
@@ -101,12 +98,19 @@ class Client implements Arrayable, Jsonable, Paginatable{
 		}
 	}
 
-	public function toArray(){
+	public function toArray(): array{
+		if(!empty($this->endpoints[$this->last_call]['data'])){
+			$target = $this->endpoints[$this->last_call]['data'];
+			if(isset($this->response[$target])){
+				return (is_array($this->response[$target])) ? $this->response[$target]:[];
+			}
+		}
+
 		return $this->response;
 	}
 
 	/**
-	 * @param int $options
+	 * @param int $optionsv
 	 *
 	 * @return false|string
 	 */
@@ -125,26 +129,40 @@ class Client implements Arrayable, Jsonable, Paginatable{
 	}
 
 	public function getPage(): int{
-		if(!empty($this->request['params']['page'])){
-			return $this->request['params']['page'];
+		if(!empty($this->response['page'])){
+			return $this->response['page'];
 		}
 
 		return 0;
 	}
 
 	public function setPage(int $page): void{
-		if(!empty($this->request['params']['page'])){
-			$this->request['params']['page']++;
+		if(empty($this->request['params'])){
+			$this->request['params'] = [];
 		}
+		$this->request['params']['page'] = $page;
 	}
 
 	public function exchangeData(): void{
 
-		$call   = $this->request['call'];
+		$call   = $this->request['method'];
 		$url    = $this->request['url'];
 		$params = $this->request['params'];
 
-		$response = $this->guzzle->$call($url, $params);
+		$data = [];
+
+		if($call == 'get' and !empty($params)){
+			$url .= '?' . http_build_query($params);
+		}
+
+		if($call == 'post' and !empty($params)){
+			//unset($params['owner_token']);
+			$data = [
+				'debug' => env('APP_DEBUG'),
+				'body'  => http_build_query($params)];
+		}
+
+		$response = $this->guzzle->$call($url, $data);
 		$this->parseResponse($response);
 	}
 }
