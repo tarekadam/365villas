@@ -24,9 +24,16 @@
             "TarekAdam\\Test\\": "tests/"
         }
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":"https://github.com/tarekadam/page-stream"
+        }
+    ],
     "require": {
         "php": ">=7.0.0",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.3",
+        "tarek-adam/page-stream": "dev-master",
     },
     "require-dev": {
         "graham-campbell/testbench": "^5.0@dev",
