@@ -9,8 +9,9 @@ use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\ResponseInterface;
 use TarekAdam\DayVillas\Exceptions\MissingEndpointException;
 use TarekAdam\DayVillas\Exceptions\UnprocessableResponseException;
+use TarekAdam\PageStream\Paginatable;
 
-class Client implements Arrayable, Jsonable{
+class Client implements Arrayable, Jsonable, Paginatable{
 
 	private $guzzle;
 	private $endpoints;
@@ -39,13 +40,16 @@ class Client implements Arrayable, Jsonable{
 			throw new MissingEndpointException($name);
 		}
 
+		$request = new RequestFactory($name);
+		$options = $request->make($arguments);
+
 		$route_info = $this->endpoints[$name];
 		$params     = [
 				'owner_token' => $this->owner,
 				'key'         => $this->key,
 				'pass'        => $this->pass,
 				'action'      => (!empty($route_info['action'])) ? $route_info['action']:strtolower($name),
-			] + $arguments;
+			] + $options;
 
 		$url = $route_info['uri'];
 		foreach($params as $k => $v){
@@ -70,10 +74,15 @@ class Client implements Arrayable, Jsonable{
 				'body'  => http_build_query($params)];
 		}
 
-		$response = $this->guzzle->$call($url, $params);
-		$this->parseResponse($response);
+		$this->request = [
+			'method' => $call,
+			'url'    => $url,
+			'params' => $params
+		];
 
-		return $this->toArray();
+		$this->exchangeData();
+
+		return $this;
 	}
 
 	private function parseResponse(ResponseInterface $response){
@@ -105,5 +114,37 @@ class Client implements Arrayable, Jsonable{
 		$data = $this->toArray();
 
 		return json_encode($data, $options);
+	}
+
+	public function totalPages(): int{
+		if(!empty($this->response['page_count'])){
+			return $this->response['page_count'];
+		}
+
+		return 0;
+	}
+
+	public function getPage(): int{
+		if(!empty($this->request['params']['page'])){
+			return $this->request['params']['page'];
+		}
+
+		return 0;
+	}
+
+	public function setPage(int $page): void{
+		if(!empty($this->request['params']['page'])){
+			$this->request['params']['page']++;
+		}
+	}
+
+	public function exchangeData(): void{
+
+		$call   = $this->request['call'];
+		$url    = $this->request['url'];
+		$params = $this->request['params'];
+
+		$response = $this->guzzle->$call($url, $params);
+		$this->parseResponse($response);
 	}
 }

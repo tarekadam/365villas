@@ -38,4 +38,15 @@ class ClientTest extends TestCase{
 
 	}
 
+	public function can_paginate(){
+		$data = $this->client->listProperties(['limit' => 2]);
+
+		$tally = 0;
+		foreach($data as $datum){
+			$tally++;
+		}
+
+		$this->assertGreaterThan(2, $tally);
+	}
+
 }
