@@ -1,0 +1,6 @@
+{
+  "propertyId": "integer",
+  "checkin": "date",
+  "checkout": "date",
+  "numberofadults": "integer",
+}

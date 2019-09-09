@@ -41,6 +41,10 @@ class Client implements Arrayable, Jsonable, Paginatable{
 			throw new MissingEndpointException($name);
 		}
 
+		if(!empty($this->endpoints[$name]['READ-ME'])){
+			unset($this->endpoints[$name]['READ-ME']);
+		}
+
 		if(!empty($arguments)){
 			$arguments = $arguments[0];
 		}
@@ -106,7 +110,7 @@ class Client implements Arrayable, Jsonable, Paginatable{
 			}
 		}
 
-		return $this->response;
+		return (empty($this->response['data'])) ? $this->response:$this->response['data'];
 	}
 
 	/**
@@ -152,6 +156,9 @@ class Client implements Arrayable, Jsonable, Paginatable{
 		$data = [];
 
 		if($call == 'get' and !empty($params)){
+			unset($params['key']);
+			unset($params['pass']);
+			unset($params['action']);
 			$url .= '?' . http_build_query($params);
 		}
 
@@ -164,5 +171,34 @@ class Client implements Arrayable, Jsonable, Paginatable{
 
 		$response = $this->guzzle->$call($url, $data);
 		$this->parseResponse($response);
+		$this->applyFilters();
+	}
+
+	private function applyFilters(){
+
+		if(empty($this->response)
+			or empty($this->endpoints[$this->last_call])){
+			return;
+		}
+
+		if(empty($this->endpoints[$this->last_call]['filters'])){
+			$this->endpoints[$this->last_call]['filters'] = '';
+		}
+
+		$filters = explode(',', $this->endpoints[$this->last_call]['filters']);
+		$filters[] = $this->last_call;
+
+		foreach($filters as $filter){
+			switch($filter){
+				case 'pos':
+					$this->response = pos($this->response);
+					break;
+
+				case 'amenitiesLibrary':
+					$this->response = collect($this->response)->pluck('amenity')->flatten(1)->all();
+					break;
+			}
+		}
+
 	}
 }

@@ -1,0 +1,7 @@
+{
+  "propertyId": "integer",
+
+  "READ-ME": "OPTIONAL",
+  "startDate": "date",
+  "endDate": "date"
+}
